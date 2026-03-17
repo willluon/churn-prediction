@@ -10,9 +10,8 @@ venv/
 data/raw/
 data/processed/
 
-# Models (large binaries)
+# Models — joblib artifacts tracked for deployment; raw .pkl files excluded
 models/*.pkl
-models/*.joblib
 
 # Jupyter
 .ipynb_checkpoints/

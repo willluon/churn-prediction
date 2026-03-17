@@ -1,0 +1,11 @@
+data/
+notebooks/
+tests/
+.git/
+*.log
+.env
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
