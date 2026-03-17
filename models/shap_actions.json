@@ -1,0 +1,52 @@
+[
+  {
+    "feature": "tenure",
+    "mean_abs_shap": 0.5238,
+    "action": "Flag new customers (<12 mo) for proactive outreach and onboarding check-in"
+  },
+  {
+    "feature": "Contract_Two year",
+    "mean_abs_shap": 0.4163,
+    "action": "Offer 1- or 2-year contract discount to reduce month-to-month churn risk"
+  },
+  {
+    "feature": "no_support",
+    "mean_abs_shap": 0.3503,
+    "action": "Priority segment: no security + no tech support \u2014 target with bundled offer"
+  },
+  {
+    "feature": "MonthlyCharges",
+    "mean_abs_shap": 0.2832,
+    "action": "Review pricing tier \u2014 high charges are a top churn driver"
+  },
+  {
+    "feature": "mtm_paperless",
+    "mean_abs_shap": 0.2807,
+    "action": "High-risk segment: month-to-month + paperless \u2014 offer loyalty discount"
+  },
+  {
+    "feature": "TotalCharges",
+    "mean_abs_shap": 0.2669,
+    "action": "Review segment for targeted offer"
+  },
+  {
+    "feature": "InternetService_Fiber optic",
+    "mean_abs_shap": 0.2402,
+    "action": "Fiber optic customers churn more \u2014 investigate service quality / pricing"
+  },
+  {
+    "feature": "PaymentMethod_Electronic check",
+    "mean_abs_shap": 0.1623,
+    "action": "Electronic check payers churn most \u2014 nudge toward auto-pay with incentive"
+  },
+  {
+    "feature": "charge_per_service",
+    "mean_abs_shap": 0.1515,
+    "action": "Offer bundle deals to improve perceived value"
+  },
+  {
+    "feature": "Contract_One year",
+    "mean_abs_shap": 0.1432,
+    "action": "Offer 1- or 2-year contract discount to reduce month-to-month churn risk"
+  }
+]
