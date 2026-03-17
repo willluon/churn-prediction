@@ -10,6 +10,10 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import shap
 from pathlib import Path
+from sklearn.calibration import calibration_curve
+from sklearn.calibration import CalibratedClassifierCV
+from sklearn.model_selection import cross_val_predict, StratifiedKFold
+from xgboost import XGBClassifier
 
 from features import prepare, FEATURE_COLS
 
@@ -103,6 +107,41 @@ def main():
     import json
     with open(MODELS_DIR / "shap_actions.json", "w") as f:
         json.dump(actions, f, indent=2)
+
+    # ── Calibration curve ────────────────────────────────────────────────────
+    print("Saving calibration curve...")
+    proba_calibrated = model.predict_proba(X)[:, 1]
+
+    # Also get uncalibrated probabilities for comparison
+    neg, pos = (y == 0).sum(), (y == 1).sum()
+    raw_model = XGBClassifier(
+        n_estimators=400, max_depth=4, learning_rate=0.05,
+        subsample=0.8, colsample_bytree=0.8,
+        scale_pos_weight=neg / pos, eval_metric="logloss",
+        random_state=42, n_jobs=-1,
+    )
+    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+    proba_uncalibrated = cross_val_predict(raw_model, X, y, cv=cv, method="predict_proba")[:, 1]
+
+    fig, ax = plt.subplots(figsize=(7, 6))
+    # Perfect calibration reference line
+    ax.plot([0, 1], [0, 1], "k--", label="Perfectly calibrated", linewidth=1.5)
+
+    frac_pos_cal, mean_pred_cal = calibration_curve(y, proba_calibrated, n_bins=10)
+    ax.plot(mean_pred_cal, frac_pos_cal, "s-", color="#2196F3", label="XGBoost + Isotonic calibration", linewidth=2, markersize=6)
+
+    frac_pos_raw, mean_pred_raw = calibration_curve(y, proba_uncalibrated, n_bins=10)
+    ax.plot(mean_pred_raw, frac_pos_raw, "^--", color="#FF5722", label="XGBoost (uncalibrated)", linewidth=2, markersize=6, alpha=0.7)
+
+    ax.set_xlabel("Mean predicted probability", fontsize=12)
+    ax.set_ylabel("Fraction of positives", fontsize=12)
+    ax.set_title("Calibration Curve\n(closer to dashed line = better probability estimates)", fontsize=13)
+    ax.legend(fontsize=11)
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    plt.tight_layout()
+    plt.savefig(MODELS_DIR / "calibration_curve.png", dpi=150, bbox_inches="tight")
+    plt.close()
 
     print("\nDone. Artifacts saved to models/")
 

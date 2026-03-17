@@ -131,5 +131,8 @@ All fields required except `customerID` (optional, defaults to `"unknown"`).
 ## Notes for Frontend Agent
 - All inference goes through the API — never import or call `src/ml/` directly
 - API_URL env var controls backend location (default `http://localhost:8000`)
-- Global SHAP plots are pre-generated PNGs at `models/shap_beeswarm.png` and `models/shap_bar.png` — load as images
+- Pre-generated PNG artifacts in `models/` to display as images:
+  - `shap_beeswarm.png` — global feature importance (beeswarm)
+  - `shap_bar.png` — global feature importance (bar)
+  - `calibration_curve.png` — calibrated vs uncalibrated model comparison
 - Use `requests` library to call the API
