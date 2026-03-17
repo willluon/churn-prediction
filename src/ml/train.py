@@ -22,7 +22,8 @@ from sklearn.metrics import (
 )
 from xgboost import XGBClassifier
 
-from features import prepare, FEATURE_COLS
+from features import prepare
+import features as _features_module
 
 # ── Paths ────────────────────────────────────────────────────────────────────
 ROOT = Path(__file__).resolve().parents[2]
@@ -133,7 +134,7 @@ def main():
     # ── Serialize ─────────────────────────────────────────────────────────────
     print("\nSaving artifacts to models/...")
     joblib.dump(calibrated_model, MODELS_DIR / "model.joblib")
-    joblib.dump(FEATURE_COLS, MODELS_DIR / "feature_cols.joblib")
+    joblib.dump(_features_module.FEATURE_COLS, MODELS_DIR / "feature_cols.joblib")
     joblib.dump(optimal_threshold, MODELS_DIR / "threshold.joblib")
     class _NumpyEncoder(json.JSONEncoder):
         def default(self, obj):

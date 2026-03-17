@@ -64,8 +64,15 @@ def engineer_features(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def encode(df: pd.DataFrame, fit: bool = True) -> pd.DataFrame:
-    """One-hot encode categoricals. fit=True during training, False during inference."""
+def encode(df: pd.DataFrame, fit: bool = True, feature_cols: list = None) -> pd.DataFrame:
+    """One-hot encode categoricals.
+
+    Args:
+        fit: True during training (saves feature cols to module global).
+             False during inference (requires feature_cols to be passed explicitly).
+        feature_cols: Required when fit=False. The ordered list of training
+                      feature column names used to align inference data.
+    """
     global FEATURE_COLS
 
     df = pd.get_dummies(df, columns=CATEGORICAL_COLS, drop_first=True)
@@ -77,8 +84,10 @@ def encode(df: pd.DataFrame, fit: bool = True) -> pd.DataFrame:
     if fit:
         FEATURE_COLS = df.columns.tolist()
     else:
-        # Align inference columns to training columns (handle unseen categories)
-        df = df.reindex(columns=FEATURE_COLS, fill_value=0)
+        # Use explicitly passed feature_cols; fall back to module global for
+        # backwards-compatibility (e.g. scripts that set it before calling).
+        cols = feature_cols if feature_cols is not None else FEATURE_COLS
+        df = df.reindex(columns=cols, fill_value=0)
 
     return df
 
